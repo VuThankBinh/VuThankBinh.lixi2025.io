@@ -458,17 +458,21 @@
             <div class="money-item">
                 <img src="image/2k.jpg" alt="">
             </div>
-            <div class="box-slider_img2025">
-                <div class="slider-img2">
-                    <img src="image/circular-pattern.png" alt="">
+            <div class="box-slider">
+                <div class="slider1">
+                    <div class="box-slider_img2025">
+                        <div class="slider-img2">
+                            <img src="image/circular-pattern.png" alt="">
+                        </div>
+                        <!-- <div class="pattern">
+                            <img src="image/pattern.png" alt="">
+                        </div> -->
+                    </div>
                 </div>
-                <!-- <div class="pattern">
-                    <img src="image/pattern.png" alt="">
-                </div> -->
             </div>
             <div class="box-button">
                 <div class="button">
-                    <button onclick="{setTimeout(()=>{showMoneyAnimation();},3000)}">Bốc Lì Xì</button>
+                    <button>Bốc Lì Xì</button>
                     <span><i class="fa-solid fa-heart"></i></span>
                 </div>
                 <div class="button">
@@ -495,39 +499,35 @@
     <script>
         let total = 0;
 
-        // Trọng số cho mỗi mệnh giá
-        const amountWeights = {
-            2: 20,
-            5: 20,
-            10: 20,
-            20: 20,
-            50: 10
-        };
+        // Mảng các mệnh giá
+        const amounts = [
+            2, 2, 2,                   // 3 số 2
+            5, 5, 5, 5, 5,            // 5 số 5
+            10, 10, 10, 10, 10, 10, 10, 10,  // 8 số 10
+            20, 20, 20, 20, 20, 20, 20, 20,  // 8 số 20
+            50                         // 1 số 50
+        ];
+        // Hàm Fisher-Yates shuffle để xáo trộn mảng
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
         function getRandomAmount() {
-            const amounts = Object.keys(amountWeights).map(Number);
-            const weights = Object.values(amountWeights);
+            // Tạo bản sao của mảng để không ảnh hưởng mảng gốc
+            let shuffledAmounts = [...amounts];
+            // Xáo trộn mảng
+            shuffleArray(shuffledAmounts);
+            // Lấy phần tử đầu tiên của mảng đã xáo trộn
+            console.log(shuffledAmounts);
+            const randomIndex = Math.floor(Math.random() * shuffledAmounts.length);
+            // Trả về phần tử ở vị trí index đó
+            console.log(`index: ${randomIndex}; value: ${shuffledAmounts[randomIndex]}`);
 
-            // Tạo mảng tích lũy
-            const cumulativeWeights = [];
-            let sum = 0;
-
-            for (let weight of weights) {
-                sum += weight;
-                cumulativeWeights.push(sum);
-            }
-
-            // Chọn số ngẫu nhiên trong khoảng tổng trọng số
-            const random = Math.random() * sum;
-
-            // Xác định mệnh giá dựa trên trọng số
-            for (let i = 0; i < cumulativeWeights.length; i++) {
-                if (random < cumulativeWeights[i]) {
-                    return amounts[i];
-                }
-            }
-
-            return amounts[amounts.length - 1]; // Tránh lỗi, trả về giá trị cuối cùng
+            return shuffledAmounts[randomIndex];
         }
 
         // Test thử
@@ -551,20 +551,6 @@
             }
         });
 
-        // function startShaking() {
-        //     showMoneyAnimation();
-        //     // if (!isShaking) {
-        //     //     isShaking = true;
-        //     //     const lixi = document.querySelector('.lixi');
-        //     //     // lixi.classList.add('shaking');
-
-        //     //     // Lắc trong 2 giây
-        //     //     setTimeout(() => {
-        //     //         // lixi.classList.remove('shaking');
-        //     //         // Không ẩn bao lì xì nữa
-        //     //         isShaking = false;
-        //     //     }, 1000);
-        //     // }
         // }
 
         function showMoneyAnimation() {
@@ -579,25 +565,11 @@
             total += randomAmount;
             openedCount++;
 
-            // Cập nhật hiển thị
-            // document.getElementById('totalMoney').textContent = `Tổng tiền: ${total}k`;
-            // document.getElementById('remainingPicks').textContent = `Còn lại: ${3 - openedCount} lần bốc`;
-
             // Hiệu ứng bay tiền
             setTimeout(() => {
                 moneyItem.classList.add('flying');
 
-                // Sau khi tiền bay xong
-                setTimeout(() => {
-                    // moneyItem.classList.remove('show', 'flying');
 
-                    // Kiểm tra số lần bốc
-                    // if (openedCount >= 3) {
-                    //     // Hết lượt bốc
-                    //     document.querySelector('.button button').disabled = true;
-                    //     document.querySelector('.button button').style.opacity = '0.5';
-                    // }
-                }, 1000);
             }, 1000);
         }
 
